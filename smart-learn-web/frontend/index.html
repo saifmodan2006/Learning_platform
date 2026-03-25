@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Learning System - AI Powered Education</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --card-bg: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        header p { color: rgba(255,255,255,0.8); font-size: 1.1rem; }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Profile Setup */
+        .profile-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); }
+        select, input {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--dark);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        button:hover { background: var(--secondary); transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .card h3 { color: var(--primary); margin-bottom: 1rem; border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; display: inline-block; }
+
+        /* Curriculum List */
+        .module-list { list-style: none; }
+        .module-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .priority-high { border-left: 4px solid var(--accent); }
+        .priority-critical { border-left: 4px solid #ef4444; }
+        .priority-medium { border-left: 4px solid #f59e0b; }
+
+        /* Code Block */
+        pre {
+            background: #0d1117;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        code { color: #58a6ff; font-family: 'Courier New', Courier, monospace; }
+
+        /* Quiz Section */
+        .quiz-option {
+            display: block;
+            background: rgba(255,255,255,0.05);
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .quiz-option:hover { background: rgba(99, 102, 241, 0.2); }
+        .quiz-option.selected { background: var(--primary); color: white; }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .dashboard { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🚀 Smart Learning System</h1>
+    <p>AI-Powered Personalized Education | 10x Faster Learning</p>
+</header>
+
+<div class="container">
+    <!-- Profile Setup -->
+    <section class="profile-section" id="profileSection">
+        <h2>🎯 Set Your Learning Profile</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <div class="form-group">
+                <label>Topic to Learn</label>
+                <input type="text" id="topicInput" placeholder="e.g., Python, React, Data Science" value="Python">
+            </div>
+            <div class="form-group">
+                <label>Current Level</label>
+                <select id="levelSelect">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Goal</label>
+                <select id="goalSelect">
+                    <option value="job">Get a Job</option>
+                    <option value="project">Build Projects</option>
+                    <option value="exam">Pass Exam</option>
+                    <option value="interview">Crack Interview</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="startLearning()">Generate Smart Path</button>
+    </section>
+
+    <div id="loading" class="spinner"></div>
+
+    <!-- Main Dashboard (Hidden initially) -->
+    <div id="dashboard" class="dashboard" style="display: none;">
+        
+        <!-- Curriculum Card -->
+        <div class="card" style="grid-column: span 2;">
+            <h3>📚 Optimized Curriculum</h3>
+            <div id="curriculumContent"></div>
+            <div style="margin-top: 1rem;">
+                <strong>Time Saved:</strong> <span id="timeSaved" style="color: var(--accent);">0 hrs</span> compared to traditional courses.
+            </div>
+        </div>
+
+        <!-- Weakness Detector -->
+        <div class="card">
+            <h3>📊 Weakness Detector</h3>
+            <p id="weaknessText" style="color: var(--text-muted);">Take a quiz to identify weak areas.</p>
+            <button onclick="startQuiz()" style="margin-top: 1rem; width: 100%;">Take Diagnostic Quiz</button>
+        </div>
+
+        <!-- Code Examples -->
+        <div class="card" style="grid-column: span 2;">
+            <h3>💻 Practical Code Examples</h3>
+            <div id="codeContent"></div>
+        </div>
+
+        <!-- Career Guidance -->
+        <div class="card">
+            <h3>💼 Career Mode</h3>
+            <div id="careerContent"></div>
+        </div>
+
+        <!-- Projects -->
+        <div class="card" style="grid-column: span 2;">
+            <h3>🛠️ Project Builder</h3>
+            <div id="projectContent"></div>
+        </div>
+
+        <!-- Notes & Cheatsheet -->
+        <div class="card">
+            <h3>📝 Smart Notes</h3>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="loadNotes('short')">Short</button>
+                <button class="tab-btn" onclick="loadNotes('cheatsheet')">Cheatsheet</button>
+                <button class="tab-btn" onclick="loadNotes('detailed')">Detailed</button>
+            </div>
+            <div id="notesContent" style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 6px; min-height: 150px;"></div>
+        </div>
+
+        <!-- Quiz Interface (Hidden initially) -->
+        <div class="card" id="quizCard" style="display: none; grid-column: span 2;">
+            <h3>🧠 Auto Quiz</h3>
+            <div id="quizContainer"></div>
+            <button id="submitQuizBtn" onclick="submitQuiz()" style="display: none; margin-top: 1rem;">Submit Answers</button>
+            <div id="quizResult" style="margin-top: 1rem; font-weight: bold;"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:5000/api';
+    let currentTopic = '';
+    let currentQuiz = [];
+    let selectedAnswers = {};
+
+    async function startLearning() {
+        const topic = document.getElementById('topicInput').value;
+        const level = document.getElementById('levelSelect').value;
+        const goal = document.getElementById('goalSelect').value;
+        
+        if(!topic) return alert('Please enter a topic');
+
+        currentTopic = topic;
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('dashboard').style.display = 'none';
+
+        try {
+            // Update Profile
+            await fetch(`${API_URL}/profile`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ level, goal })
+            });
+
+            // Get Analysis
+            const res = await fetch(`${API_URL}/analyze`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ topic, level, goal })
+            });
+            const data = await res.json();
+
+            renderCurriculum(data.curriculum, data.estimated_time);
+            renderCode(data.code_examples);
+            renderCareer(data.career_guidance);
+            loadProjects(topic);
+            loadNotes('short');
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'grid';
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to connect to backend. Ensure server is running on port 5000.');
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    function renderCurriculum(modules, totalTime) {
+        const container = document.getElementById('curriculumContent');
+        let html = '<ul class="module-list">';
+        
+        modules.forEach(m => {
+            const icon = m.type === 'code' ? '💻' : m.type === 'project' ? '🚀' : m.type === 'quiz' ? '🧠' : '📖';
+            html += `
+                <li class="module-item priority-${m.priority}">
+                    <span>${icon} <strong>${m.title}</strong> <small style="color:var(--text-muted)">(${m.time})</small></span>
+                    <span style="font-size:0.8rem; text-transform:uppercase; color:var(--text-muted)">${m.type}</span>
+                </li>
+            `;
+        });
+        
+        html += '</ul>';
+        container.innerHTML = html;
+        
+        // Calculate time saved (assume traditional is 3x longer)
+        const traditionalTime = totalTime * 3;
+        const savedHours = ((traditionalTime - totalTime) / 60).toFixed(1);
+        document.getElementById('timeSaved').innerText = `${savedHours} hours`;
+    }
+
+    function renderCode(examples) {
+        const container = document.getElementById('codeContent');
+        let html = '';
+        
+        examples.forEach(ex => {
+            html += `
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--secondary); margin-bottom: 0.5rem;">${ex.title}</h4>
+                    <pre><code>${ex.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">💡 ${ex.explanation}</p>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+
+    function renderCareer(career) {
+        const container = document.getElementById('careerContent');
+        container.innerHTML = `
+            <div style="margin-bottom: 1rem;">
+                <strong>Roles:</strong><br>
+                ${career.roles.map(r => `<span style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; font-size:0.8rem; margin-right:5px;">${r}</span>`).join('')}
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <strong>Salary:</strong> <span style="color: var(--accent);">${career.salary_range}</span>
+            </div>
+            <div>
+                <strong>Resume Tip:</strong><br>
+                <em style="color: var(--text-muted); font-size: 0.9rem;">"${career.resume_points[0]}"</em>
+            </div>
+        `;
+    }
+
+    async function loadProjects(topic) {
+        try {
+            const res = await fetch(`${API_URL}/projects?topic=${encodeURIComponent(topic)}`);
+            const data = await res.json();
+            
+            const container = document.getElementById('projectContent');
+            let html = '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:1rem;">';
+            
+            data.projects.forEach(p => {
+                html += `
+                    <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px;">
+                        <h4 style="color: var(--primary);">${p.title}</h4>
+                        <span style="font-size:0.8rem; background:var(--primary); color:white; padding:2px 6px; border-radius:4px;">${p.difficulty}</span>
+                        <ul style="margin-top:0.5rem; padding-left:1.2rem; font-size:0.9rem; color:var(--text-muted);">
+                            ${p.steps.map(s => `<li>${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        } catch (e) {
+            document.getElementById('projectContent').innerHTML = '<p>Error loading projects.</p>';
+        }
+    }
+
+    async function loadNotes(mode) {
+        // Update tabs
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+
+        try {
+            const res = await fetch(`${API_URL}/notes`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ topic: currentTopic, mode })
+            });
+            const data = await res.json();
+            
+            // Simple markdown-like formatting
+            let content = data.notes
+                .replace(/### (.*)/g, '<h4>$1</h4>')
+                .replace(/## (.*)/g, '<h3>$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+                
+            document.getElementById('notesContent').innerHTML = content;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function startQuiz() {
+        document.getElementById('quizCard').style.display = 'block';
+        document.getElementById('quizResult').innerText = '';
+        document.getElementById('submitQuizBtn').style.display = 'block';
+        selectedAnswers = {};
+
+        try {
+            const res = await fetch(`${API_URL}/quiz`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ topic: currentTopic })
+            });
+            const data = await res.json();
+            currentQuiz = data.quiz;
+
+            const container = document.getElementById('quizContainer');
+            let html = '';
+
+            currentQuiz.forEach((q, idx) => {
+                html += `
+                    <div style="margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+                        <p style="font-weight:bold; margin-bottom:0.5rem;">${idx + 1}. ${q.question}</p>
+                        ${q.options.map((opt, optIdx) => `
+                            <div class="quiz-option" onclick="selectAnswer(${idx}, ${optIdx}, this)">
+                                ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            // Scroll to quiz
+            document.getElementById('quizCard').scrollIntoView({ behavior: 'smooth' });
+        } catch (e) {
+            alert('Error loading quiz');
+        }
+    }
+
+    function selectAnswer(qIdx, optIdx, element) {
+        selectedAnswers[qIdx] = optIdx;
+        
+        // Visual feedback
+        const parent = element.parentElement;
+        parent.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+    }
+
+    async function submitQuiz() {
+        if (Object.keys(selectedAnswers).length < currentQuiz.length) {
+            return alert('Please answer all questions');
+        }
+
+        let score = 0;
+        currentQuiz.forEach((q, idx) => {
+            if (selectedAnswers[idx] === q.answer) score++;
+        });
+
+        const timeTaken = 60; // Simulated
+
+        try {
+            const res = await fetch(`${API_URL}/submit-quiz`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    topic: currentTopic,
+                    score,
+                    total: currentQuiz.length,
+                    time_taken: timeTaken
+                })
+            });
+            const data = await res.json();
+
+            const resultDiv = document.getElementById('quizResult');
+            resultDiv.innerHTML = `
+                <div style="font-size: 1.2rem; color: ${data.result.percentage >= 60 ? '#4ade80' : '#f87171'}">
+                    Score: ${score}/${currentQuiz.length} (${data.result.percentage.toFixed(0)}%)
+                </div>
+                <div style="margin-top: 0.5rem; color: var(--text-muted);">
+                    Weaknesses: ${data.weaknesses.join(', ')}
+                </div>
+            `;
+
+            document.getElementById('weaknessText').innerText = "Identified: " + data.weaknesses.join(', ');
+            document.getElementById('submitQuizBtn').style.display = 'none';
+        } catch (e) {
+            alert('Error submitting quiz');
+        }
+    }
+</script>
+
+</body>
+</html>
